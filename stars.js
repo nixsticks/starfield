@@ -6,15 +6,18 @@ var viewAngle = 45,
     near = 0.1,
     far = 10000;
 
-var renderer = new THREE.WebGLRenderer();
-var camera = new THREE.PerspectiveCamera(
-  viewAngle,
-  aspect,
-  near,
-  far
-);
+var mouse = { x: 0, y: 0 }, starSystem, INTERSECTED, target, zoom = false;
 
-var scene = new THREE.Scene();
+var projector = new THREE.Projector(),
+    ray = new THREE.Raycaster(),
+    renderer = new THREE.WebGLRenderer(),
+    camera = new THREE.PerspectiveCamera(
+      viewAngle,
+      aspect,
+      near,
+      far
+    ),
+    scene = new THREE.Scene();
 
 scene.add(camera);
 
@@ -35,7 +38,23 @@ var stars = new THREE.Geometry(),
       transparent: true
     });
 
+stars.dynamic = true;
+
 var controls = new THREE.OrbitControls( camera, renderer.domElement );
+
+function onDocumentMouseMove(event) {
+  mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+  mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+}
+
+function onDocumentMouseDown(event) {
+  if (INTERSECTED) {
+    target = INTERSECTED;
+    zoom = true;
+  } else {
+    zoom = false;
+  }
+}
 
 $(document).ready(function()  {
   jQuery.get('stars.json', function(data) {
@@ -57,18 +76,60 @@ $(document).ready(function()  {
       }
     }
 
-    var starSystem = new THREE.ParticleSystem(stars, starMaterial);
+    starSystem = new THREE.ParticleSystem(stars, starMaterial);
     starSystem.sortParticles = true;
 
     scene.add(starSystem);
     animate();
+
+    document.addEventListener("mousemove", onDocumentMouseMove)
+    document.addEventListener("mousedown", onDocumentMouseDown)
   });
 });
 
+// function mousemove(event) {
+//   event.preventDefault();
+
+//   mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+//   mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+// }
+
 function animate() {
   requestAnimationFrame(animate);
-  renderer.render(scene, camera);
+  render();
   controls.update();
+}
+
+function render() {
+  if (target) {
+    camera.lookAt( target.position );
+  } else {
+    camera.lookAt(new THREE.Vector3(0,0,0));
+  }
+
+
+   if(zoom && camera.fov>10){
+      camera.fov-=1;
+      camera.updateProjectionMatrix();
+    }else if(!zoom && camera.fov<70){
+      camera.fov+=1;
+      camera.updateProjectionMatrix();
+    }
+
+
+  var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
+  projector.unprojectVector(vector, camera);
+
+  var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
+  var intersects = raycaster.intersectObjects([starSystem]);
+  if ( intersects.length > 0 ) {
+    INTERSECTED = intersects[0].object
+  } else {
+    INTERSECTED = null;
+  }
+
+
+  renderer.render(scene, camera);
 }
 
 function makeTextSprite( message, parameters ) {
