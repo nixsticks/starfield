@@ -3,7 +3,9 @@ var width = window.innerWidth,
     startTime = Date.now(),
     container,
     camera,
+    cameraCube,
     scene,
+    sceneCube,
     renderer,
     skyboxMesh;
 
@@ -13,8 +15,11 @@ init();
 animate();
 
 function init() {
-  camera = new THREE.PerspectiveCamera(70, width / height, 1, 100000);
+  camera = new THREE.PerspectiveCamera(70, width / height, 1, 100000)
+  cameraCube = new THREE.PerspectiveCamera(70, width / height, 1, 100000);
+
   scene = new THREE.Scene();
+  sceneCube = new THREE.Scene();
 
   var prefix = "images/";
   var urls = [prefix + "px.jpg", prefix + "nx.jpg", prefix + "py.jpg", prefix + "ny.jpg", prefix + "pz.jpg", prefix + "nz.jpg"];
@@ -29,11 +34,13 @@ function init() {
     fragmentShader: shader.fragmentShader,
     vertexShader: shader.vertexShader,
     uniforms: shader.uniforms,
+    depthWrite: false,
+    depthTest: false,
     side: THREE.BackSide
   });
 
-  skyboxMesh = new THREE.Mesh(new THREE.CubeGeometry( 100000, 100000, 100000, 1, 1, 1, null, true), material );
-  scene.add(skyboxMesh);
+  skyboxMesh = new THREE.Mesh(new THREE.CubeGeometry( 10000, 10000, 10000, 1, 1, 1, null, true), material );
+  sceneCube.add(skyboxMesh);
 
   renderer = new THREE.WebGLRenderer();
   renderer.setSize(width, height);
@@ -50,5 +57,9 @@ function render() {
   camera.position.x = 1000 * Math.cos(timer);
   camera.position.z = 1000 * Math.sin(timer);
 
+  camera.lookAt(scene.position);
+  cameraCube.rotation.copy(camera.rotation);
+
   renderer.render(scene, camera);
+  renderer.render(sceneCube, cameraCube);
 }
