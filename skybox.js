@@ -32,7 +32,7 @@ function init() {
     side: THREE.BackSide
   });
 
-  skyboxMesh = new THREE.Mesh(new THREE.CubeGeometry( 100000, 100000, 100000), material );
+  skyboxMesh = new THREE.Mesh(new THREE.CubeGeometry( 100000, 100000, 100000, 1, 1, 1, null, true), material );
   scene.add(skyboxMesh);
 
   renderer = new THREE.WebGLRenderer();
@@ -46,9 +46,9 @@ function animate() {
 }
 
 function render() {
-  // var timer = - new Date().getTime() * 0.0002;
-  // camera.position.x = 1000 * Math.cos(timer);
-  // camera.position.z = 1000 * Math.sin(timer);
+  var timer = - new Date().getTime() * 0.0002;
+  camera.position.x = 1000 * Math.cos(timer);
+  camera.position.z = 1000 * Math.sin(timer);
 
   renderer.render(scene, camera);
 }
