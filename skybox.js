@@ -13,15 +13,13 @@ init();
 animate();
 
 function init() {
-  camera = new THREE.Camera(70, width / height, 1, 100000);
+  camera = new THREE.PerspectiveCamera(70, width / height, 1, 10000000);
   scene = new THREE.Scene();
-  scene.add(camera);
 
-  var prefix = "images/"
+  var prefix = "images/";
   var urls = [prefix + "px.jpg", prefix + "nx.jpg", prefix + "py.jpg", prefix + "ny.jpg", prefix + "pz.jpg", prefix + "nz.jpg"];
 
   var textureCube = THREE.ImageUtils.loadTextureCube(urls);
-  textureCube.format = THREE.RGBFormat;
 
   var shader = THREE.ShaderLib["cube"];
   // var uniforms = THREE.UniformsUtils.clone(shader.uniforms);
@@ -32,18 +30,16 @@ function init() {
     vertexShader: shader.vertexShader,
     uniforms: shader.uniforms,
     depthWrite: false,
+    depthTest: false,
     side: THREE.BackSide
   });
 
-  skyboxMesh = new THREE.Mesh(new THREE.CubeGeometry( 100000, 100000, 100000), material );
+  skyboxMesh = new THREE.Mesh(new THREE.CubeGeometry( 1000, 1000, 1000), material );
   scene.add(skyboxMesh);
-
-  container = document.createElement("div");
-  document.body.appendChild(container);
 
   renderer = new THREE.WebGLRenderer();
   renderer.setSize(width, height);
-  container.appendChild(renderer.domElement);
+  document.body.appendChild(renderer.domElement);
 }
 
 function animate() {
@@ -52,9 +48,9 @@ function animate() {
 }
 
 function render() {
-  var timer = - new Date().getTime() * 0.0002;
-  camera.position.x = 1000 * Math.cos(timer);
-  camera.position.z = 1000 * Math.sin(timer);
+  // var timer = - new Date().getTime() * 0.0002;
+  // camera.position.x = 1000 * Math.cos(timer);
+  // camera.position.z = 1000 * Math.sin(timer);
 
   renderer.render(scene, camera);
 }
