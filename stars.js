@@ -82,8 +82,8 @@ $(document).ready(function()  {
     scene.add(starSystem);
     animate();
 
-    document.addEventListener("mousemove", onDocumentMouseMove)
-    document.addEventListener("mousedown", onDocumentMouseDown)
+    // document.addEventListener("mousemove", onDocumentMouseMove)
+    // document.addEventListener("mousedown", onDocumentMouseDown)
   });
 });
 
