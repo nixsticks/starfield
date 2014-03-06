@@ -101,32 +101,32 @@ function animate() {
 }
 
 function render() {
-  if (target) {
-    camera.lookAt( target.position );
-  } else {
-    camera.lookAt(new THREE.Vector3(0,0,0));
-  }
+  // if (target) {
+  //   camera.lookAt( target.position );
+  // } else {
+  //   camera.lookAt(new THREE.Vector3(0,0,0));
+  // }
 
 
-   if(zoom && camera.fov>10){
-      camera.fov-=1;
-      camera.updateProjectionMatrix();
-    }else if(!zoom && camera.fov<70){
-      camera.fov+=1;
-      camera.updateProjectionMatrix();
-    }
+  //  if(zoom && camera.fov>10){
+  //     camera.fov-=1;
+  //     camera.updateProjectionMatrix();
+  //   }else if(!zoom && camera.fov<70){
+  //     camera.fov+=1;
+  //     camera.updateProjectionMatrix();
+  //   }
 
 
-  var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
-  projector.unprojectVector(vector, camera);
+  // var vector = new THREE.Vector3(mouse.x, mouse.y, 0.5);
+  // projector.unprojectVector(vector, camera);
 
-  var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
-  var intersects = raycaster.intersectObjects([starSystem]);
-  if ( intersects.length > 0 ) {
-    INTERSECTED = intersects[0].object
-  } else {
-    INTERSECTED = null;
-  }
+  // var raycaster = new THREE.Raycaster(camera.position, vector.sub(camera.position).normalize());
+  // var intersects = raycaster.intersectObjects([starSystem]);
+  // if ( intersects.length > 0 ) {
+  //   INTERSECTED = intersects[0].object
+  // } else {
+  //   INTERSECTED = null;
+  // }
 
 
   renderer.render(scene, camera);
